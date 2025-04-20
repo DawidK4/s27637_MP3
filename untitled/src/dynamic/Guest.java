@@ -1,5 +1,7 @@
 package dynamic;
 
+import utils.ObjectPlus;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -10,6 +12,7 @@ public class Guest extends AccountUser{
     public Guest(AccountUser prevUser, int guestId) {
         super(prevUser.email);
         setGuestId(guestId);
+        ObjectPlus.removeFromExtent(prevUser);
     }
 
     public int getGuestId() {

@@ -1,5 +1,7 @@
 package dynamic;
 
+import utils.ObjectPlus;
+
 public class Registered extends AccountUser{
     private String username;
     private String password;
@@ -8,6 +10,7 @@ public class Registered extends AccountUser{
         super(prevUser.email);
         setUsername(username);
         setPassword(password);
+        ObjectPlus.removeFromExtent(prevUser);
     }
 
     public String getUsername() {

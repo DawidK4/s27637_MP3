@@ -1,9 +1,12 @@
 package dynamic;
 
-public abstract class AccountUser {
+import utils.ObjectPlus;
+
+public abstract class AccountUser extends ObjectPlus {
     protected String email;
 
     public AccountUser(String email) {
+        super();
         setEmail(email);
     }
 

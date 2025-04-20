@@ -1,5 +1,7 @@
 package dynamic;
 
+import utils.ObjectPlus;
+
 public class Admin extends AccountUser{
     private String name;
     private String password;
@@ -8,6 +10,7 @@ public class Admin extends AccountUser{
         super(prevUser.email);
         setName(name);
         setPassword(password);
+        ObjectPlus.removeFromExtent(prevUser);
     }
 
     public String getName() {
@@ -28,7 +31,7 @@ public class Admin extends AccountUser{
 
     public void setPassword(String password) {
         if (password.length() < 5) {
-            throw new IllegalArgumentException("Password must contain at least 6 characters!");
+            throw new IllegalArgumentException("Password must contain at least 5 characters!");
         }
 
         this.password = password;

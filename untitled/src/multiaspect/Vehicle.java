@@ -37,7 +37,8 @@ public abstract class Vehicle {
         return powerSource;
     }
 
-    public void setPowerSource(PowerSource powerSource) {
+    // Cannot be public because this functionality will cause overlapping inheritance
+    private void setPowerSource(PowerSource powerSource) {
         if (powerSource == null) {
             throw new IllegalArgumentException("Power source must not be null!");
         }

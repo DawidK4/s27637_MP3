@@ -8,7 +8,6 @@ class VehicleTest {
 
     @org.junit.jupiter.api.BeforeEach
     void setUp() {
-        Truck truck = new Truck("2131231", "qdsadasdas", 54.7f, 90);
     }
 
     @org.junit.jupiter.api.AfterEach

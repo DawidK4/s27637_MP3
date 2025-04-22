@@ -1,19 +1,14 @@
 package multiaspect;
 
-public class Motorcycle extends Vehicle{
+public class Motorcycle extends Vehicle {
     private boolean hasSidecar;
 
-    public Motorcycle(String vin, String model, float batteryCapacity, boolean hasSidecar) {
-        super(vin, model, batteryCapacity);
+    public Motorcycle(String vin, String model, boolean hasSidecar, PowerSource powerSource) {
+        super(vin, model, powerSource);
         this.hasSidecar = hasSidecar;
     }
 
-    public Motorcycle(String vin, String model, int engineCapacity, boolean hasSidecar) {
-        super(vin, model, engineCapacity);
-        this.hasSidecar = hasSidecar;
-    }
-
-    public boolean isHasSidecar() {
+    public boolean hasSidecar() {
         return hasSidecar;
     }
 

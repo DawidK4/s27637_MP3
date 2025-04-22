@@ -6,44 +6,93 @@ import java.util.Set;
 
 enum EmployeeType {Employee, Manager, Developer, Tester}
 
-interface IManager {
-    void manageTeam();
-}
-
-interface IDeveloper {
-    void developApplication();
-}
-
-interface ITester {
-    void testSoftware();
-}
-
 public class Employee implements IManager, IDeveloper, ITester {
     private final int employeeId;
     private final String name;
     private final EnumSet<EmployeeType> employeeTypes;
     private static final Set<Integer> ids = new HashSet<>();
 
-    private Employee(int employeeId, String name, EnumSet<EmployeeType> roles) {
-        if (ids.contains(employeeId)) {
+    private final Integer hoursWorked;
+    private final String programmingLanguage;
+
+    public Employee(int employeeId, String name) {
+        validateId(employeeId);
+        this.employeeId = employeeId;
+
+        validateName(name);
+        this.name = name;
+
+        this.employeeTypes = EnumSet.of(EmployeeType.Employee);
+        this.hoursWorked = null;
+        this.programmingLanguage = null;
+    }
+
+    public Employee(int employeeId, String name, int hoursWorked) {
+        validateId(employeeId);
+        this.employeeId = employeeId;
+
+        validateName(name);
+        this.name = name;
+        this.employeeTypes = EnumSet.of(EmployeeType.Employee, EmployeeType.Manager);
+
+        validateHours(hoursWorked);
+        this.hoursWorked = hoursWorked;
+        this.programmingLanguage = null;
+    }
+
+    public Employee(int employeeId, String name, String programmingLanguage) {
+        validateId(employeeId);
+        this.employeeId = employeeId;
+
+        validateName(name);
+        this.name = name;
+
+        this.employeeTypes = EnumSet.of(EmployeeType.Employee, EmployeeType.Developer);
+        this.hoursWorked = null;
+
+        validateLanguage(programmingLanguage);
+        this.programmingLanguage = programmingLanguage;
+    }
+
+    public Employee(int employeeId, String name, int hoursWorked, String programmingLanguage) {
+        validateId(employeeId);
+        this.employeeId = employeeId;
+
+        validateName(name);
+        this.name = name;
+        this.employeeTypes = EnumSet.of(EmployeeType.Employee, EmployeeType.Manager, EmployeeType.Developer);
+
+        validateHours(hoursWorked);
+        this.hoursWorked = hoursWorked;
+
+        validateLanguage(programmingLanguage);
+        this.programmingLanguage = programmingLanguage;
+    }
+
+    // Attribute validation
+    private static void validateId(int id) {
+        if (ids.contains(id)) {
             throw new IllegalArgumentException("Employee must have unique id!");
         }
-        if (roles == null || roles.isEmpty()) {
-            throw new IllegalArgumentException("Employee must have at least one role!");
-        }
+        ids.add(id);
+    }
 
-        ids.add(employeeId);
-        this.employeeId = employeeId;
-        this.name = name;
-        this.employeeTypes = EnumSet.copyOf(roles);
-
-        if (!employeeTypes.contains(EmployeeType.Employee)) {
-            employeeTypes.add(EmployeeType.Employee); // always ensure basic Employee role
+    private static void validateName(String name) {
+        if (name == null || name.isEmpty()) {
+            throw new IllegalArgumentException("Name must not be null or empty!");
         }
     }
 
-    public static Employee createEmployee(int employeeId, String name, EnumSet<EmployeeType> roles) {
-        return new Employee(employeeId, name, roles);
+    private static void validateHours(int hoursWorked) {
+        if (hoursWorked < 0) {
+            throw new IllegalArgumentException("Hours worked must not be negative!");
+        }
+    }
+
+    private static void validateLanguage(String programmingLanguage) {
+        if (programmingLanguage == null || programmingLanguage.isEmpty()) {
+            throw new IllegalArgumentException("Programming language must not be null or empty!");
+        }
     }
 
     @Override
@@ -55,11 +104,27 @@ public class Employee implements IManager, IDeveloper, ITester {
     }
 
     @Override
+    public int getHoursWorked() {
+        if (!employeeTypes.contains(EmployeeType.Manager)) {
+            throw new UnsupportedOperationException(name + " is not a Manager!");
+        }
+        return hoursWorked;
+    }
+
+    @Override
     public void developApplication() {
         if (!employeeTypes.contains(EmployeeType.Developer)) {
             throw new UnsupportedOperationException(name + " is not a Developer!");
         }
         System.out.println(name + " is developing the application.");
+    }
+
+    @Override
+    public String getProgrammingLanguage() {
+        if (!employeeTypes.contains(EmployeeType.Developer)) {
+            throw new UnsupportedOperationException(name + " is not a Developer!");
+        }
+        return programmingLanguage;
     }
 
     @Override
@@ -76,6 +141,10 @@ public class Employee implements IManager, IDeveloper, ITester {
         }
     }
 
+    public EnumSet<EmployeeType> getEmployeeTypes() {
+        return EnumSet.copyOf(employeeTypes);
+    }
+
     public int getEmployeeId() {
         return employeeId;
     }
@@ -83,8 +152,5 @@ public class Employee implements IManager, IDeveloper, ITester {
     public String getName() {
         return name;
     }
-
-    public EnumSet<EmployeeType> getEmployeeTypes() {
-        return EnumSet.copyOf(employeeTypes);
-    }
 }
+

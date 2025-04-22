@@ -6,48 +6,72 @@ import java.util.Set;
 
 enum EmployeeType {Employee, Manager, Developer, Tester}
 
-public class Employee {
-    private int employeeId;
-    private String name;
-    private EnumSet<EmployeeType> employeeType = EnumSet.of(EmployeeType.Employee);
+interface IManager {
+    void manageTeam();
+}
 
-    private static Set<Integer> ids = new HashSet<>();
+interface IDeveloper {
+    void developApplication();
+}
 
-    public Employee(int employeeId, String name) {
+interface ITester {
+    void testSoftware();
+}
+
+public class Employee implements IManager, IDeveloper, ITester {
+    private final int employeeId;
+    private final String name;
+    private final EnumSet<EmployeeType> employeeTypes;
+    private static final Set<Integer> ids = new HashSet<>();
+
+    private Employee(int employeeId, String name, EnumSet<EmployeeType> roles) {
         if (ids.contains(employeeId)) {
             throw new IllegalArgumentException("Employee must have unique id!");
         }
-        ids.add(employeeId);
+        if (roles == null || roles.isEmpty()) {
+            throw new IllegalArgumentException("Employee must have at least one role!");
+        }
 
+        ids.add(employeeId);
         this.employeeId = employeeId;
         this.name = name;
-    }
+        this.employeeTypes = EnumSet.copyOf(roles);
 
-    public void addRole(EmployeeType type) {
-        employeeType.add(type);
-    }
-
-    public void removeRole(EmployeeType type) {
-        if (type != EmployeeType.Employee) {
-            employeeType.remove(type);
+        if (!employeeTypes.contains(EmployeeType.Employee)) {
+            employeeTypes.add(EmployeeType.Employee); // always ensure basic Employee role
         }
     }
 
-    public boolean hasRole(EmployeeType type) {
-        return employeeType.contains(type);
+    public static Employee createEmployee(int employeeId, String name, EnumSet<EmployeeType> roles) {
+        return new Employee(employeeId, name, roles);
     }
 
-    public void work() {
-        if (employeeType.contains(EmployeeType.Manager)) {
-            System.out.println(name + " is managing the team.");
+    @Override
+    public void manageTeam() {
+        if (!employeeTypes.contains(EmployeeType.Manager)) {
+            throw new UnsupportedOperationException(name + " is not a Manager!");
         }
-        if (employeeType.contains(EmployeeType.Developer)) {
-            System.out.println(name + " is developing the application.");
+        System.out.println(name + " is managing the team.");
+    }
+
+    @Override
+    public void developApplication() {
+        if (!employeeTypes.contains(EmployeeType.Developer)) {
+            throw new UnsupportedOperationException(name + " is not a Developer!");
         }
-        if (employeeType.contains(EmployeeType.Tester)) {
-            System.out.println(name + " is testing the software.");
+        System.out.println(name + " is developing the application.");
+    }
+
+    @Override
+    public void testSoftware() {
+        if (!employeeTypes.contains(EmployeeType.Tester)) {
+            throw new UnsupportedOperationException(name + " is not a Tester!");
         }
-        if (employeeType.size() == 1 && employeeType.contains(EmployeeType.Employee)) {
+        System.out.println(name + " is testing the software.");
+    }
+
+    public void doGeneralTasks() {
+        if (employeeTypes.contains(EmployeeType.Employee)) {
             System.out.println(name + " is doing general employee tasks.");
         }
     }
@@ -58,5 +82,9 @@ public class Employee {
 
     public String getName() {
         return name;
+    }
+
+    public EnumSet<EmployeeType> getEmployeeTypes() {
+        return EnumSet.copyOf(employeeTypes);
     }
 }

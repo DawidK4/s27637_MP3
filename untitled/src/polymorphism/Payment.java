@@ -1,4 +1,4 @@
-package abstractcl;
+package polymorphism;
 
 public abstract class Payment {
     private static int idCounter;
